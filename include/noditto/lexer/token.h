@@ -1,15 +1,15 @@
 #ifndef TOKEN_H_
 #define TOKEN_H_
 
-#include <noditto/lexer/token_type>
+#include <noditto/lexer/token_type.h>
+
 #include <string>
 
-typedef struct token
-{
-    enum TokenType type;
-    std::string value;
-    int line;
-    int column;
+typedef struct token {
+  enum TokenType type;
+  std::string value;
+  int line;
+  int column;
 } token_t;
 
-#endif //TOKEN_H_
+#endif  // TOKEN_H_
