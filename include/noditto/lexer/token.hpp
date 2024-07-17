@@ -1,8 +1,7 @@
-#ifndef TOKEN_H_
-#define TOKEN_H_
+#ifndef TOKEN_HPP_
+#define TOKEN_HPP_
 
-#include <noditto/lexer/token_type.h>
-
+#include <noditto/lexer/token_type.hpp>
 #include <string>
 
 typedef struct token {

@@ -1,8 +1,7 @@
-#ifndef LEXER_H_
-#define LEXER_H_
+#ifndef LEXER_HPP_
+#define LEXER_HPP_
 
-#include <noditto/lexer/token.h>
-
+#include <noditto/lexer/token.hpp>
 #include <string>
 #include <vector>
 

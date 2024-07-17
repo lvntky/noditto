@@ -1,5 +1,4 @@
-#include <noditto/hello.h>
-#include <noditto/lexer/lexer.h>
+#include <noditto/lexer/lexer.hpp>
 
 int main() {
   Lexer lexer("int a = 10;");

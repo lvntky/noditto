@@ -1,6 +1,5 @@
-#include <noditto/lexer/lexer.h>
-
 #include <iostream>
+#include <noditto/lexer/lexer.hpp>
 
 Lexer::Lexer(const std::string& source) {
   this->source = source;
