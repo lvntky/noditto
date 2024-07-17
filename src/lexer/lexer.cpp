@@ -1,4 +1,5 @@
 #include <iostream>
+#include <noditto/commons/log_commons.hpp>
 #include <noditto/lexer/lexer.hpp>
 
 Lexer::Lexer(const std::string& source) {
