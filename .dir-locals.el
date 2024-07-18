@@ -5,5 +5,4 @@
                                (expand-file-name "include/noditto" root)
                                (expand-file-name "include/noditto/commons" root)
                                (expand-file-name "include/noditto/lexer" root)
-                               (expand-file-name "include/noditto/tostring" root))))))))
-
+                               (expand-file-name "include/noditto/util" root))))))))

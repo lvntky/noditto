@@ -2,20 +2,8 @@
 #include <iostream>
 #include <noditto/commons/log_commons.hpp>
 #include <noditto/lexer/lexer.hpp>
-#include <noditto/tostring/tostring.hpp>
-
-std::string readFileToString(const std::string& filename) {
-  std::ifstream file(filename);
-  if (!file.is_open()) {
-    std::cerr << "Error opening file: " << filename << std::endl;
-    return "";
-  }
-
-  std::string content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
-
-  file.close();
-  return content;
-}
+#include <noditto/util/tostring.hpp>
+#include <noditto/util/file_util.hpp>
 
 int main(int argc, char** argv) {
   if (argc < 1) {
@@ -31,7 +19,7 @@ int main(int argc, char** argv) {
   for (size_t i = 0; i < tokens.size(); i++) {
     token_t currentToken = tokens.at(i);
     std::string currentTokenType = tokenTypeToString(currentToken.type);
-    spdlog::info("{} - value: {}\ttype: {}\tcolumn: {}\t line: {}", i, currentToken.value,
+    spdlog::info("{} - value: {}\t type: {}\t column: {}\t line: {}", i, currentToken.value,
                  currentTokenType, currentToken.column, currentToken.line);
   }
 
