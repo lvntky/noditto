@@ -73,12 +73,18 @@ packageProject(
   DEPENDENCIES "fmt 8.1.1"
 )
 
-# Add spdlog to the export set
+# Export the targets
+install(TARGETS ${PROJECT_NAME} fmt spdlog
+  EXPORT ${PROJECT_NAME}Targets
+  LIBRARY DESTINATION lib
+  ARCHIVE DESTINATION lib
+  RUNTIME DESTINATION bin
+  INCLUDES DESTINATION include
+)
+
+# Install the export set
 install(EXPORT ${PROJECT_NAME}Targets
   FILE ${PROJECT_NAME}Targets.cmake
   NAMESPACE ${PROJECT_NAME}::
   DESTINATION lib/cmake/${PROJECT_NAME}
 )
-
-# Ensure spdlog is included in the export set
-install(TARGETS ${PROJECT_NAME} fmt spdlog EXPORT ${PROJECT_NAME}Targets)
