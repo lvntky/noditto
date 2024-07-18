@@ -1,4 +1,8 @@
 # Noditto
+![Codacy grade](https://img.shields.io/codacy/grade/ca849b3cbc8c48819d4a30413d33f114)
+![Codecov](https://img.shields.io/codecov/c/github/lvntky/noditto)
+![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/lvntky/noditto/install.yml)
+
 
 > ditto (/ˈdɪtəʊ/) <br>
 > noun - the same thing again (used in lists and accounts and often indicated by a ditto mark under the word or figure to be repeated).
@@ -40,9 +44,9 @@ Command-Line Options
 
 5. Generating Reports:
     - Ditto generates a detailed report of the detected duplications, including file names, line numbers, and similarity percentages.
-    
+
 ## Contributing
 Contributions are welcome! Please feel free to submit a pull request or open an issue if you find any bugs or have suggestions for improvements.
 
-## License 
+## License
 MIT

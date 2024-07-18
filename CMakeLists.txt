@@ -15,6 +15,9 @@ if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
   )
 endif()
 
+# ---- Find Threads ----
+find_package(Threads REQUIRED)
+
 # ---- Add dependencies via CPM ----
 include(cmake/CPM.cmake)
 
@@ -36,9 +39,6 @@ CPMAddPackage(
   OPTIONS "SPDLOG_FMT_EXTERNAL_HO YES" # Use external fmt library
 )
 
-# Ensure FetchContent_MakeAvailable is used instead of FetchContent_Populate
-FetchContent_MakeAvailable(fmt spdlog)
-
 # ---- Add source files ----
 file(GLOB_RECURSE headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp")
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
@@ -51,7 +51,7 @@ set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
 target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
 
 # Link dependencies
-target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt spdlog::spdlog)
+target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt spdlog::spdlog Threads::Threads)
 
 target_include_directories(
   ${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
@@ -81,4 +81,4 @@ install(EXPORT ${PROJECT_NAME}Targets
 )
 
 # Ensure spdlog is included in the export set
-install(TARGETS spdlog EXPORT ${PROJECT_NAME}Targets)
+install(TARGETS ${PROJECT_NAME} fmt spdlog EXPORT ${PROJECT_NAME}Targets)
