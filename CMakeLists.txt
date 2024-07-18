@@ -36,6 +36,9 @@ CPMAddPackage(
   OPTIONS "SPDLOG_FMT_EXTERNAL_HO YES" # Use external fmt library
 )
 
+# Ensure FetchContent_MakeAvailable is used instead of FetchContent_Populate
+FetchContent_MakeAvailable(fmt spdlog)
+
 # ---- Add source files ----
 file(GLOB_RECURSE headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp")
 file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
@@ -69,3 +72,13 @@ packageProject(
   COMPATIBILITY SameMajorVersion
   DEPENDENCIES "fmt 8.1.1"
 )
+
+# Add spdlog to the export set
+install(EXPORT ${PROJECT_NAME}Targets
+  FILE ${PROJECT_NAME}Targets.cmake
+  NAMESPACE ${PROJECT_NAME}::
+  DESTINATION lib/cmake/${PROJECT_NAME}
+)
+
+# Ensure spdlog is included in the export set
+install(TARGETS spdlog EXPORT ${PROJECT_NAME}Targets)
