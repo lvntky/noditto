@@ -1,5 +1,7 @@
 # Noditto
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/ad137361863a4de78ac9598c9e10f82d)](https://app.codacy.com/gh/lvntky/noditto?utm_source=github.com&utm_medium=referral&utm_content=lvntky/noditto&utm_campaign=Badge_Grade)
+
 > ditto (/ˈdɪtəʊ/) <br>
 > noun - the same thing again (used in lists and accounts and often indicated by a ditto mark under the word or figure to be repeated).
 
