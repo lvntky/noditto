@@ -1,90 +1,67 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.14)
 
-# ---- Project ----
+include(cmake/prelude.cmake)
+
 project(
-  Noditto
-  VERSION 1.0
-  LANGUAGES CXX
+    noditto
+    VERSION 0.1.0
+    DESCRIPTION "AST Based Code Duplication Finder"
+    HOMEPAGE_URL "https://leventkaya.dev"
+    LANGUAGES CXX
 )
 
-# ---- Include guards ----
-if(PROJECT_SOURCE_DIR STREQUAL PROJECT_BINARY_DIR)
-  message(
-    FATAL_ERROR
-      "In-source builds not allowed. Please make a new directory (called a build directory) and run CMake from there."
-  )
-endif()
+include(cmake/project-is-top-level.cmake)
+include(cmake/variables.cmake)
 
-# ---- Find Threads ----
-find_package(Threads REQUIRED)
+# ---- Declare library ----
 
-# ---- Add dependencies via CPM ----
-include(cmake/CPM.cmake)
-
-# PackageProject.cmake will be used to make our target installable
-CPMAddPackage("gh:TheLartians/PackageProject.cmake@1.8.0")
-
-# Specify compatible versions
-CPMAddPackage(
-  NAME fmt
-  GIT_TAG 8.1.1 # Adjusted to a version compatible with spdlog v1.14.1
-  GITHUB_REPOSITORY fmtlib/fmt
-  OPTIONS "FMT_INSTALL YES" # create an installable target
+add_library(
+    noditto_lib OBJECT
+    source/lexer.cpp
+    source/file_util.cpp
+    source/tostring.cpp
 )
-
-CPMAddPackage(
-  NAME spdlog
-  GIT_TAG v1.14.1
-  GITHUB_REPOSITORY gabime/spdlog
-  OPTIONS "SPDLOG_FMT_EXTERNAL_HO YES" # Use external fmt library
-)
-
-# ---- Add source files ----
-file(GLOB_RECURSE headers CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp")
-file(GLOB_RECURSE sources CONFIGURE_DEPENDS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp")
-
-# ---- Create library ----
-add_library(${PROJECT_NAME} ${headers} ${sources})
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
-
-# being a cross-platform target, we enforce standards conformance on MSVC
-target_compile_options(${PROJECT_NAME} PUBLIC "$<$<COMPILE_LANG_AND_ID:CXX,MSVC>:/permissive->")
-
-# Link dependencies
-target_link_libraries(${PROJECT_NAME} PRIVATE fmt::fmt spdlog::spdlog Threads::Threads)
 
 target_include_directories(
-  ${PROJECT_NAME} PUBLIC $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>
-                         $<INSTALL_INTERFACE:include/${PROJECT_NAME}-${PROJECT_VERSION}>
+    noditto_lib ${warning_guard}
+    PUBLIC
+    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include>"
+    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/include/noditto>"
+    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source>"
+    "$<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/source/util>"
 )
 
-# ---- Create an installable target ----
-string(TOLOWER ${PROJECT_NAME}/version.h VERSION_HEADER_LOCATION)
+target_compile_features(noditto_lib PUBLIC cxx_std_17)
 
-packageProject(
-  NAME ${PROJECT_NAME}
-  VERSION ${PROJECT_VERSION}
-  NAMESPACE ${PROJECT_NAME}
-  BINARY_DIR ${PROJECT_BINARY_DIR}
-  INCLUDE_DIR ${PROJECT_SOURCE_DIR}/include
-  INCLUDE_DESTINATION include/${PROJECT_NAME}-${PROJECT_VERSION}
-  VERSION_HEADER "${VERSION_HEADER_LOCATION}"
-  COMPATIBILITY SameMajorVersion
-  DEPENDENCIES "fmt 8.1.1"
-)
+find_package(fmt REQUIRED)
+find_package(spdlog REQUIRED)
 
-# Export the targets
-install(TARGETS ${PROJECT_NAME} fmt spdlog
-  EXPORT ${PROJECT_NAME}Targets
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib
-  RUNTIME DESTINATION bin
-  INCLUDES DESTINATION include
-)
+target_link_libraries(noditto_lib PRIVATE fmt::fmt spdlog::spdlog)
 
-# Install the export set
-install(EXPORT ${PROJECT_NAME}Targets
-  FILE ${PROJECT_NAME}Targets.cmake
-  NAMESPACE ${PROJECT_NAME}::
-  DESTINATION lib/cmake/${PROJECT_NAME}
-)
+# ---- Declare executable ----
+
+add_executable(noditto_elf source/main.cpp)
+add_executable(noditto::elf ALIAS noditto_elf)
+
+set_property(TARGET noditto_elf PROPERTY OUTPUT_NAME noditto)
+
+target_compile_features(noditto_elf PRIVATE cxx_std_17)
+
+target_link_libraries(noditto_elf PRIVATE noditto_lib)
+
+# ---- Install rules ----
+
+if(NOT CMAKE_SKIP_INSTALL_RULES)
+  include(cmake/install-rules.cmake)
+endif()
+
+# ---- Developer mode ----
+
+if(NOT noditto_DEVELOPER_MODE)
+  return()
+elseif(NOT PROJECT_IS_TOP_LEVEL)
+  message(
+      AUTHOR_WARNING
+      "Developer mode is intended for developers of noditto"
+  )
+endif()

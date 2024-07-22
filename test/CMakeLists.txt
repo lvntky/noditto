@@ -1,59 +1,26 @@
-cmake_minimum_required(VERSION 3.22)
+# Parent project does not export its library target, so this CML implicitly
+# depends on being added from it, i.e. the testing is done only from the build
+# tree and is not feasible from an install location
 
-project(NodittoTests LANGUAGES CXX)
-
-# ---- Options ----
-
-option(ENABLE_TEST_COVERAGE "Enable test coverage" OFF)
-option(TEST_INSTALLED_VERSION "Test the version found by find_package" OFF)
-
-# --- Import tools ----
-
-include(../cmake/tools.cmake)
+project(nodittoTests LANGUAGES CXX)
 
 # ---- Dependencies ----
 
-include(../cmake/CPM.cmake)
+find_package(Catch2 REQUIRED)
+include(Catch)
 
-CPMAddPackage("gh:doctest/doctest@2.4.11")
+# ---- Tests ----
 
-if(TEST_INSTALLED_VERSION)
-  find_package(Noditto REQUIRED)
-else()
-  CPMAddPackage(NAME Noditto SOURCE_DIR ${CMAKE_CURRENT_LIST_DIR}/..)
-endif()
+add_executable(noditto_test source/noditto_test.cpp)
+target_link_libraries(
+    noditto_test PRIVATE
+    noditto_lib
+    Catch2::Catch2WithMain
+)
+target_compile_features(noditto_test PRIVATE cxx_std_17)
 
-# ---- Create binary ----
+catch_discover_tests(noditto_test)
 
-file(GLOB sources CONFIGURE_DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
-add_executable(${PROJECT_NAME} ${sources})
-target_link_libraries(${PROJECT_NAME} doctest::doctest Noditto::Noditto)
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 17)
+# ---- End-of-file commands ----
 
-# enable compiler warnings
-if(NOT TEST_INSTALLED_VERSION)
-  if(CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU")
-    target_compile_options(Noditto PUBLIC -Wall -Wpedantic -Wextra -Werror)
-  elseif(MSVC)
-    target_compile_options(Noditto PUBLIC /W4 /WX)
-    target_compile_definitions(${PROJECT_NAME} PUBLIC DOCTEST_CONFIG_USE_STD_HEADERS)
-  endif()
-endif()
-
-# ---- Add NodittoTests ----
-
-enable_testing()
-
-# Note: doctest and similar testing frameworks can automatically configure CMake tests. For other
-# testing frameworks add the tests target instead: add_test(NAME ${PROJECT_NAME} COMMAND
-# ${PROJECT_NAME})
-
-include(${doctest_SOURCE_DIR}/scripts/cmake/doctest.cmake)
-doctest_discover_tests(${PROJECT_NAME})
-
-# ---- code coverage ----
-
-if(ENABLE_TEST_COVERAGE)
-  target_compile_options(Noditto PUBLIC -O0 -g -fprofile-arcs -ftest-coverage)
-  target_link_options(Noditto PUBLIC -fprofile-arcs -ftest-coverage)
-endif()
+add_folders(Test)

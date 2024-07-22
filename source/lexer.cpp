@@ -1,19 +1,23 @@
 #include <iostream>
+
 #include <noditto/commons/log_commons.hpp>
 #include <noditto/lexer/lexer.hpp>
 
-Lexer::Lexer(const std::string& source) {
+Lexer::Lexer(const std::string& source)
+{
   this->source = source;
   this->column = 1;
   this->line = 1;
   this->position = 0;
 }
 
-char Lexer::getCurrentChar() {
+char Lexer::getCurrentChar()
+{
   return this->position < this->source.length() ? source.at(position) : '\0';
 }
 
-void Lexer::advance() {
+void Lexer::advance()
+{
   this->position++;
   this->column++;
 
@@ -23,17 +27,20 @@ void Lexer::advance() {
   }
 }
 
-void Lexer::skipWhiteSpace() {
+void Lexer::skipWhiteSpace()
+{
   if (isspace(getCurrentChar())) {
     this->advance();
   }
 }
 
-token_t Lexer::createToken(TokenType type, const std::string& value) {
-  return token_t{type, value, line, column};
+token_t Lexer::createToken(TokenType type, const std::string& value)
+{
+  return token_t {type, value, line, column};
 }
 
-std::vector<token_t> Lexer::tokenize() {
+std::vector<token_t> Lexer::tokenize()
+{
   std::vector<token_t> tokens;
   while (position < source.length()) {
     char ch = getCurrentChar();
