@@ -1,11 +1,13 @@
 #ifndef LEXER_HPP_
 #define LEXER_HPP_
 
-#include <noditto/lexer/token.hpp>
 #include <string>
 #include <vector>
 
-class Lexer {
+#include <noditto/lexer/token.hpp>
+
+class Lexer
+{
 public:
   Lexer(const std::string&);
   std::vector<token_t> tokenize();
