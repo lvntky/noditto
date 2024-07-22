@@ -33,6 +33,7 @@ target_include_directories(
 
 target_compile_features(noditto_lib PUBLIC cxx_std_17)
 
+# Find and link fmt and spdlog
 find_package(fmt REQUIRED)
 find_package(spdlog REQUIRED)
 
@@ -47,7 +48,7 @@ set_property(TARGET noditto_elf PROPERTY OUTPUT_NAME noditto)
 
 target_compile_features(noditto_elf PRIVATE cxx_std_17)
 
-target_link_libraries(noditto_elf PRIVATE noditto_lib)
+target_link_libraries(noditto_elf PRIVATE noditto_lib fmt::fmt spdlog::spdlog)
 
 # ---- Install rules ----
 
